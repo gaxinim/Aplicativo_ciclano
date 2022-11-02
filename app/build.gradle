@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.projeto_ciclano'
+    namespace 'com.example.aplicativo'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.projeto_ciclano"
+        applicationId "com.example.aplicativo"
         minSdk 26
         targetSdk 32
         versionCode 1
