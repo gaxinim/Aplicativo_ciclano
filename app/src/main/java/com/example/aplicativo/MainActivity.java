@@ -2,6 +2,7 @@ package com.example.aplicativo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,20 +21,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.updateQuestions();
+        //this.updateQuestions();
 
-        message = (TextView) findViewById(R.id.tvQuestion);
-        changeTextButton = (Button) findViewById(R.id.btChangeText);
+        //message = (TextView) findViewById(R.id.tvQuestion);
+        changeTextButton = (Button) findViewById(R.id.btStartQuestionnaire);
 
         changeTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (idx == questionsSize){
-                    Log.i("Informative", "Chegou ao final da lista");
-                } else{
-                    message.setText(questionsArray[idx % questionsSize].getQuery());
-                    idx++;
-                }
+
+                Intent intent = new Intent(MainActivity.this, QuestionActivity.class);
+                startActivity(intent);
+
+        //        if (idx == questionsSize){
+          //          Log.i("Informative", "Chegou ao final da lista");
+            //    } else{
+              //      message.setText(questionsArray[idx % questionsSize].getQuery());
+                //    idx++;
+                //}
             }
         });
     }
