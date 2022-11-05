@@ -2,6 +2,7 @@
     <string name="app_name">Aplicativo Ciclano</string>
     <string name="start_questionnaire">Iniciar o questionário</string>
     <string name="finish_message">Você finalizou o questionário</string>
+    <string name="option_not_selected">Selecione uma opção</string>
     <string name="score">Sua pontuação é </string>
     <string name="next_question">Próxima</string>
     <string name="last_question">Concluir</string>

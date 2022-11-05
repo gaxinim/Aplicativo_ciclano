@@ -2,18 +2,17 @@ package com.example.aplicativo;
 
 import androidx.annotation.Nullable;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class QuestionActivity extends AppCompatActivity {
 
@@ -34,60 +33,61 @@ public class QuestionActivity extends AppCompatActivity {
         this.nextQuestion = (Button) findViewById(R.id.btNextQuestion);
         this.rdGroup = (RadioGroup) findViewById(R.id.rdGroupQuestions);
         this.getQuestions();
-        this.updateQuestions();
 
-        this.nextQuestion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateQuestions();
-            }
-        });
+        this.nextQuestion.setOnClickListener(v -> isCorrect());
     }
 
     private void getQuestions() {
         this.listQuestions = new ListQuestions();
-        questionsArray = this.listQuestions.getQuestions();
-        questionsSize = this.listQuestions.getSize();
+        this.questionsArray = this.listQuestions.getQuestions();
+        this.questionsSize = this.listQuestions.getSize();
+
+        this.updateQuestion();
     }
 
-    private void updateQuestions() {
+    private void isCorrect() {
+        if (this.rdGroup.getCheckedRadioButtonId() != -1){
+            int selectedValue = this.rdGroup.getCheckedRadioButtonId() % this.questionsSize;
+            boolean answerIsRight = (selectedValue == this.idxAnswer);
+            this.score = (answerIsRight) ? this.score+1 : this.score;
+
+            this.rdGroup.removeAllViews();
+            this.rdGroup.clearCheck();
+            if (this.idx >= this.questionsSize){
+                this.calculateScore();
+            }
+
+            this.updateQuestion();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.option_not_selected, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateQuestion(){
         if (this.idx < this.questionsSize) {
             this.message.setText(this.questionsArray[this.idx % this.questionsSize].getQuery());
 
-            /*
-            check https://github.com/sandipapps/TechQuizApp/blob/master/app/src/main/java/com/sandipbhattacharya/techquizapp/StartGame.java
-             */
             ArrayList<String> answers = this.questionsArray[this.idx].getAnswers();
             for (int i = 0; i < answers.size(); i++){
                 RadioButton rb = new RadioButton(this);
                 rb.setText(answers.get(i));
                 this.rdGroup.addView(rb, i);
-                //this.rdGroup.removeAllViews();
             }
 
             this.idxAnswer = this.questionsArray[this.idx].getIndexAnswer();
-            boolean answerIsRight = ((RadioButton) this.rdGroup.findViewById(this.idxAnswer)).isChecked();
-
-            this.score = (answerIsRight) ? this.score++ : this.score;
             this.idx++;
         }
 
         if (this.idx == this.questionsSize) {
-            /*
-                    check for more information Intent
-                    https://stackoverflow.com/questions/4186021/how-to-start-new-activity-on-button-click
-                    here call new Intent for show score
-                     */
-            Log.i("Informative", "Chegou ao final da lista");
             this.nextQuestion.setText(R.string.last_question);
         }
     }
 
-    private void nextQuestion(){
-
-    }
-
-    private void checkAnswerOfQuestion(){
-
+    private void calculateScore(){
+        double dScore = (double)(this.score * 100) / this.questionsSize;
+        Intent intent = new Intent(QuestionActivity.this, FinishActivity.class);
+        intent.putExtra("score", dScore);
+        startActivity(intent);
+        finish();
     }
 }
